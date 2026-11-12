@@ -1,0 +1,36 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "rhel-openssl-3.0.x"]
+    output = "../node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+/// Last good normalised payload per feed cache key. Upserted by key, so the table stays bounded
+/// (one row per feed/horizon). Used to serve STALE data when an upstream API is down and to share
+/// state between serverless instances.
+model FeedSnapshot {
+  key       String   @id
+  feedId    String
+  payload   Json
+  fetchedAt DateTime
+  updatedAt DateTime @updatedAt
+
+  @@index([feedId])
+}
+
+/// One row per real upstream attempt (not per page view). Pruned to a 48 h window on write.
+model FeedCheck {
+  id        String   @id @default(cuid())
+  feedId    String
+  ts        DateTime @default(now())
+  status    String
+  latencyMs Int
+  error     String?
+
+  @@index([feedId, ts])
+  @@index([ts])
+}
