@@ -4,6 +4,9 @@ A dense, dark-mode command center for Germany. It combines live open data – po
 warnings, Autobahn traffic, river gauges, air quality, markets and macroeconomics – with curated structural data
 on society, politics and public finances, broken down by Bundesland.
 
+<img width="1673" height="903" alt="image" src="https://github.com/user-attachments/assets/0a49162a-b10c-43b4-b055-0f3eee5d725d" />
+
+
 ## Features
 
 - **11 views:** Command Center, Map & Bundesländer, Energy Grid, Weather & Warnings, Mobility, Rivers & Shipping,
