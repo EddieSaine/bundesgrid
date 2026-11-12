@@ -90,32 +90,17 @@ If you set `DATABASE_URL`, run `npx prisma db push` once.
 
 ## Deploy to Vercel via GitHub
 
-1. Create an empty repository on GitHub (no README, no .gitignore).
-2. Unzip the project and put its contents into that repository on the `main` branch, either with your usual
-   Git workflow or by dragging the files into GitHub's "uploading an existing file" page.
-   Make sure the hidden files `.npmrc` and `.gitignore` are included, and commit `package-lock.json`.
-3. On vercel.com choose **Add New > Project** and import the repository.
-4. Leave every setting on its default. `vercel.json` already sets the framework and the build command
-   (`npx prisma generate && npm run build`), and `.npmrc` sets `legacy-peer-deps=true`, which the install needs.
-5. No environment variables are required. Optional: `DATABASE_URL` (then run `npx prisma db push` once).
-6. Click **Deploy**. Every push to `main` redeploys.
+1. Replace the files in your GitHub repository with the contents of this folder. At minimum, replace
+   `package.json`, `package-lock.json`, `next.config.js` and `vercel.json`, and delete `.npmrc` if it is there.
+2. On vercel.com, import the repository (or simply push: Vercel redeploys automatically).
+3. Leave all settings on default. `vercel.json` sets install (`npm install --legacy-peer-deps`) and build (`npm run build`).
+   If you overrode Install/Build Command in the Vercel project settings, switch them back to default.
+4. No environment variables are required. Optional: `DATABASE_URL` (then run `npx prisma db push` once).
 
-Notes for Vercel:
+Notes:
 
-- The SSE endpoint closes after about 50 s and the browser reconnects on its own, which keeps it within serverless time limits.
-- The in-memory cache is per instance, so a cold start refetches upstream data.
-- `package.json` still lists template dependencies the app does not import. They only slow the install down.
-  `motion-dom` and `motion-utils` are pinned on purpose; newer versions break the build with framer-motion 12.23.12.
-- `next.config.js` is the original hosting config. It sets `outputFileTracingRoot` to `/` and skips type errors
-  during the build (`npx tsc --noEmit` passes separately). If Vercel reports a file-tracing or path problem,
-  replace the file with:
-
-  ```js
-  /** @type {import('next').NextConfig} */
-  const nextConfig = { poweredByHeader: false, images: { unoptimized: true } };
-  module.exports = nextConfig;
-  ```
-
-- `npm run lint` reports errors (strict React hook rules, vendored files under `public/abacus-viz`). The build does not run lint.
-- Verified in a clean copy: `npm ci`, `npx prisma generate`, `npx tsc --noEmit` and `npm run build` pass without `DATABASE_URL`,
-  and all pages and API routes answered 200 under `npm run start`. A real Vercel deployment has not been run.
+- The dependency list is minimal and conflict-free with React 19, so `npm install` works even without `--legacy-peer-deps`.
+- `motion-dom` and `motion-utils` are pinned on purpose; newer versions break framer-motion 12.23.12.
+- The SSE endpoint closes after about 50 s and the browser reconnects, which keeps it within serverless limits.
+- Tested in a clean copy: `npm ci`, `npx tsc --noEmit`, `npm run build` (without `DATABASE_URL`) and `next start`
+  with all pages and APIs returning 200. A real Vercel deployment has not been run from this workspace.
