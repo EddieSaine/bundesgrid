@@ -2,7 +2,7 @@
 
 /**
  * AbacusDashboard — the house dashboard runtime (abacus-viz on Apache ECharts) as a React component.
- * The manifest describes the dashboard (see components/viz/VIZ.md); `data` holds the rows per data key.
+ * The manifest describes the dashboard tiles; `data` holds the rows per data key.
  * The runtime and its CSS are static files under /public/abacus-viz and are loaded once, on the client.
  */
 import { useEffect, useRef, useState } from 'react';
